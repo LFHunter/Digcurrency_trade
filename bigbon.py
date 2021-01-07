@@ -71,12 +71,52 @@ class  Bigbon_Crawler():
         # self.print_byType(resp.status_code)
         # self.print_byType(resp.text)
         data = brotli.decompress(resp.content)
-        data1 = data.decode('utf-8')
-        print(data1)
-        print(resp.status_code)
-        print(resp.encoding)
-        print("--------------------------------")
-        return {'webText': resp.text, 'webContent': resp.content}
+        data = data.decode('utf-8')
+        print(f"webdata:{data}")
+        print(f"status_code:{resp.status_code},encoding:{resp.encoding}")
+        if   resp.status_code == 200:
+            return data
+        else:
+            return None
+
+    def  filter_HoldContract(self,webdata,filter):
+        filter ={
+            "thầy phong thuỷ":{
+            "coinType":"BTC/USDT"
+                "leverTimes":"5",
+
+
+        }
+
+
+
+
+        }
+        opened_Contract = {"thầy phong thuỷ":["BTC/USDT","ETH/USDT"]}
+        for   data     in  webdata["data"]:
+            #thầy phong thuỷ
+            trader = data['trader']
+            #coinType =  data['quotationCoinVo']['coin']['name']
+            coinType = data['name']
+            leverTimes = data['leverTimes']
+            displayPrice = data['displayPrice']
+            margin = data['margin']
+            stopLossPrice = data['stopLossPrice']
+            stopLossRate =  data['stopLossRate']
+            stopProfitRate = data['stopProfitRate']
+            stopProfitPrice =  data['stopProfitPrice']
+
+
+
+            """stopLossPrice: 31098.2
+            stopLossRate: -1
+            stopProfitModifyTime: "2020-11-22T18:08:47.000+0800"
+            stopProfitPrice: 8906.405
+            stopProfitRate: 50
+            sysForcePrice: 34006.4223895206 """
+
+
+
 
 from  config import bigbon_config
 
