@@ -1,3 +1,4 @@
 config.py
 ftx_exchange.py
 .idea
+DigExchangeLib/__pycache__
