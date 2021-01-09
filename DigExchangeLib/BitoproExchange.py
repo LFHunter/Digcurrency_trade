@@ -28,8 +28,7 @@ class  BitoproExchange:
         resp = self.request.get(url=url, allow_redirects=True, headers=headers, timeout=10)
         if resp.status_code == 200:
             data = resp.json()
-            print(data)
-            #pprint.pprint(data)
+            #print(data)
             return data
 
 if __name__ == '__main__':
