@@ -15,20 +15,47 @@ from  DigExchangeLib.BinanceExchange import BinanceExchange
 """
 def  find_Bito_cheapest_price(bito_orderbook):
     asksList = bito_orderbook['asks']
-    cheapestinfo = {"price":asksList[0]['price'],'amount':asksList[0]['amount']}
+    bidsList = bito_orderbook['bids']
+    cheapest_ask = {"askprice":asksList[0]['price'],
+                    'askamount':asksList[0]['amount']}
+
+    highest_bid = {"bidprice": bidsList[0]['price'],
+                    "bidamount": bidsList[0]['amount']}
+    print(highest_bid)
     for  ask  in asksList:
-        if  float(ask['price']) < float(cheapestinfo['price']) :
-            cheapestinfo = ask
-    return  cheapestinfo
+        if  float(ask['price']) < float(cheapest_ask['askprice']) :
+            cheapest_ask = {"askprice":ask['price'],
+                    'askamount':ask['amount']}
+    for  bid  in bidsList:
+        if  float(bid['price']) < float(highest_bid['bidprice']) :
+            highest_bid = {"bidprice": bidsList[0]['price'],
+                           "bidamount": bidsList[0]['amount']}
+    return  [cheapest_ask,highest_bid]
 
 
 
 def  find_Max_cheapest_price(maxE_orderbook):
-    cheapestinfo = {"price": maxE_orderbook[0]['price'], 'amount':maxE_orderbook[0]['volume']}
+    cheapest_ask = {}
+    highest_bid = {}
+    print(maxE_orderbook)
+    if maxE_orderbook[0]['side'] == "ask":
+        cheapest_ask = {"askprice": maxE_orderbook[0]['price'],
+                        'askamount': maxE_orderbook[0]['volume']}
+        highest_bid = {"bidprice": float(maxE_orderbook[0]['price'])-10000,
+                       "bidamount": maxE_orderbook[0]['volume']}
+    elif  maxE_orderbook[0]['side'] == "bid":
+        highest_bid = {"bidprice": maxE_orderbook[0]['price'],
+                       "bidamount": maxE_orderbook[0]['volume']}
+        cheapest_ask = {"askprice": float(maxE_orderbook[0]['price'])+10000,
+                        'askamount': maxE_orderbook[0]['volume']}
+
+
     for  order in maxE_orderbook:
-        if  order['side'] == "ask"  and  float(cheapestinfo['price'])  < float(order['price']):
-            cheapestinfo =  {"price": float(order['price']) , 'amount':order['volume']}
-    return cheapestinfo
+        if  order['side'] == "ask"  and  float(cheapest_ask['askprice'])  < float(order['price']):
+            cheapest_ask =  {"askprice": float(order['price']) , 'askamount':order['volume']}
+        elif  order['side'] == "bid"  and  float(highest_bid['bidprice'])  < float(order['price']):
+            highest_bid = {"bidprice": float(order['price']), 'bidamount': order['volume']}
+    return [cheapest_ask,highest_bid]
 
 def find_Binance_cheapest_price(binance_orderbook):
     """
@@ -52,15 +79,18 @@ btc/eth/ltc/bch/mith/xrp/max/sand       usdt
 
 
 maxE = MaxExchange()
-maxE_orderbook = maxE.get_orderbook("ethusdt",limit=4)
+maxE_orderbook = maxE.get_orderbook("ethusdt",limit=40)
 max_price = find_Max_cheapest_price(maxE_orderbook)
 bito = BitoproExchange()
 bito_orderbook = bito.get_orderbook("eth_usdt")
 bito_price = find_Bito_cheapest_price(bito_orderbook)
 
-binance = BinanceExchange()
-binance_orderbook =  binance .get_orderbook("ETHUSDT")
-binance_price  = find_Binance_cheapest_price(binance_orderbook)
+# binance = BinanceExchange()
+# binance_orderbook =  binance .get_orderbook("ETHUSDT")
+# binance_price  = find_Binance_cheapest_price(binance_orderbook)
 
-print(f"Max:{max_price}\nBito:{bito_price}\nBinance:{binance_price}")
+
+
+#\nBinance:{binance_price}
+print(f"Max:{max_price}\nBito:{bito_price}")
 
